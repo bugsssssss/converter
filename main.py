@@ -108,8 +108,11 @@ class VideoConverterApp(QWidget):
                 '-b:v', '5M',
                 '-gpu', '0',
             ]
-            video_clip.write_videofile(output_directory, codec=codec, ffmpeg_params=[
-                                       ffmpeg_cmd], threads=4)  # Adjust the number of threads as needed
+            ffmpeg_cmd_str = ' '.join(map(str, ffmpeg_cmd))
+            # Adjust the number of threads as needed
+            video_clip.write_videofile(
+                output_directory, codec=codec,
+                ffmpeg_params=ffmpeg_cmd_str, threads=4)
             self.status_label.setText('Status: Conversion Successful!')
         except Exception as e:
             self.status_label.setText(f'Status: Error - {str(e)}')
