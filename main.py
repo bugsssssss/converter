@@ -83,32 +83,32 @@ class VideoConverterApp(QWidget):
             return
 
         try:
-            # Set the output file path using the selected output directory
             output_name = os.path.splitext(
                 os.path.basename(self.input_file_path))[0]
             output_directory = os.path.join(
                 self.output_file_path, f'{output_name}_converted.mp4')
 
             video_clip = VideoFileClip(self.input_file_path)
-            # Set the output file name and codec
-            output_file = "output_video.mp4"
-            codec = "libx264"  # You can choose other codecs supported by your FFmpeg version
 
-            # Specify the custom FFmpeg command with GPU acceleration
+            output_name = os.path.splitext(
+                os.path.basename(self.input_file_path))[0]
+            output_directory = os.path.join(
+                self.output_file_path, f'{output_name}_converted.mp4')
+
+            codec = "libx264"
+
             # ffmpeg_cmd = (
             #     f"ffmpeg -y -i - -c:v {codec} -c:a aac -strict experimental "
             #     "-vf 'scale=trunc(iw/2)*2:trunc(ih/2)*2' -b:a 192k -r 30 {output_file}"
             # )
+
             ffmpeg_cmd = [
                 '-c:v', 'h264_nvenc',
-                # You can experiment with different presets: fast, hq, etc.
                 '-preset', 'fast',
                 '-b:v', '5M',
-                # Use the GPU with index 0 (change it if you have multiple GPUs)
                 '-gpu', '0',
             ]
-            # Write the video file using the custom FFmpeg command
-            video_clip.write_videofile(output_file, codec=codec, ffmpeg_params=[
+            video_clip.write_videofile(output_directory, codec=codec, ffmpeg_params=[
                                        ffmpeg_cmd], threads=4)  # Adjust the number of threads as needed
             self.status_label.setText('Status: Conversion Successful!')
         except Exception as e:
