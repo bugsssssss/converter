@@ -111,8 +111,8 @@ class VideoConverterApp(QWidget):
                 output_directory, codec=codec,
                 ffmpeg_params=[
                     '-c:v', 'h264_nvenc',
-                    '-preset', 'fast',
-                    '-b:v', '5M',
+                    '-preset', 'slow',
+                    # '-b:v', '5M',
                     '-gpu', '0',
                 ],
                 write_logfile=True
