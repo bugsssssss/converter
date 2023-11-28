@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QFileDialog, QLineEdit
 from moviepy.editor import VideoFileClip
 import os
+import imageio_ffmpeg as ffmpeg
 
 
 class VideoConverterApp(QWidget):
@@ -102,6 +103,10 @@ class VideoConverterApp(QWidget):
             #     "-vf 'scale=trunc(iw/2)*2:trunc(ih/2)*2' -b:a 192k -r 30 {output_file}"
             # )
 
+            ffmpeg.get_ffmpeg_version()
+            # Use 'qsv', 'vdpau', 'vaapi', etc. for other accelerations
+            ffmpeg.get_ffmpeg_version(acceleration='cuvid')
+
             video_clip.write_videofile(
                 output_directory, codec=codec,
                 ffmpeg_params=[
@@ -109,7 +114,10 @@ class VideoConverterApp(QWidget):
                     '-preset', 'fast',
                     '-b:v', '5M',
                     '-gpu', '0',
-                ], threads=4)
+                ],
+                write_logfile=True
+                # threads=4
+            )
             self.status_label.setText('Status: Conversion Successful!')
         except Exception as e:
             self.status_label.setText(f'Status: Error - {str(e)}')
