@@ -102,17 +102,14 @@ class VideoConverterApp(QWidget):
             #     "-vf 'scale=trunc(iw/2)*2:trunc(ih/2)*2' -b:a 192k -r 30 {output_file}"
             # )
 
-            ffmpeg_cmd = [
-                '-c:v', 'h264_nvenc',
-                '-preset', 'fast',
-                '-b:v', '5M',
-                '-gpu', '0',
-            ]
-            ffmpeg_cmd_str = ' '.join(map(str, ffmpeg_cmd))
-            # Adjust the number of threads as needed
             video_clip.write_videofile(
                 output_directory, codec=codec,
-                ffmpeg_params=ffmpeg_cmd_str, threads=4)
+                ffmpeg_params=[
+                    '-c:v', 'h264_nvenc',
+                    '-preset', 'fast',
+                    '-b:v', '5M',
+                    '-gpu', '0',
+                ], threads=4)
             self.status_label.setText('Status: Conversion Successful!')
         except Exception as e:
             self.status_label.setText(f'Status: Error - {str(e)}')
